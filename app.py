@@ -8,7 +8,7 @@ DEBUG = True
 SECRET_KEY = 'secret'
 USERNAME = 'admin'
 PASSWORD = 'password'
-
+HOST = '0.0.0.0'
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -99,4 +99,4 @@ def delete_entry(post_id):
 
 if __name__ == '__main__':
     init_db()
-    app.run()
+    app.run(host=app.config['HOST'])

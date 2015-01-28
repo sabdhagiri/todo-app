@@ -71,10 +71,10 @@ class FlaskrTestCase(unittest.TestCase):
         assert b'<strong>HTML</strong> allowed here' in rv.data
     
     def test_delete_message(self):
-    """Ensure the messages are being deleted"""
-    rv = self.app.get('/delete/1')
-    data = json.loads(rv.data)
-    self.assertEqual(data['status'], 1)
+        """Ensure the messages are being deleted"""
+        rv = self.app.get('/delete/1')
+        data = json.loads(rv.data)
+        self.assertEqual(data['status'], 1)
 
 if __name__ == '__main__':
     unittest.main()

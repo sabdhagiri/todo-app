@@ -35,7 +35,7 @@ class ObjectStore:
           for k,v in response.items():
                print "%s - %s" %(k,v)
       
-      def get_temp_url_for_object(self, container,obj, expire_after):
+      def get_temp_url(self, container,obj, expire_after):
           method = 'GET'
           expires = int(time() + expire_after*60)
           path = '/v1/AUTH_%s/%s/%s' %(self.tenant_id, container,obj)
@@ -45,6 +45,7 @@ class ObjectStore:
           s = 'http://10.1.10.130:8080{path}?temp_url_sig={sig}&temp_url_expires={expires}'
           url = s.format(path=path,sig=sig,expires=expires)
           print url
+          return url
 
 if __name__ == '__main__':
     sw = ObjectStore()

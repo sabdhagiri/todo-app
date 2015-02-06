@@ -109,6 +109,24 @@ def delete_entry(post_id):
 
     return jsonify(result)
 
+@app.route('/gettempurl/<post_id>', methods=['GET'])
+def get_temp_url(post_id):
+    print "I am here" 
+    result = { 'status':0, 'message': 'Error'  }
+    try:
+        db = get_db()
+        cur = db.execute('select attachment_container, objectname from entries where id=' + post_id)
+        rv = cur.fetchone()
+        container = rv[0]
+        objectname = rv[1]
+        tempurl = objstr.get_temp_url(container, objectname, 60)
+        result = { 'status':1, 'url': tempurl }
+    except Exception as e:
+        result = { 'status':0, 'url': repr(e) }
+
+    return jsonify(result)
+
+
 if __name__ == '__main__':
     init_db()
     app.run(host=app.config['HOST'])

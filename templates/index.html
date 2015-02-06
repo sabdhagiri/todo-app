@@ -40,13 +40,14 @@
         <li class="entry"><h2 id={{ entry.id }}>{{ entry.title }}</h2>{{ entry.text|safe }}
         <br>
         {% if entry.objectname %}
-           <button type="button" class="btn btn-primary">
+           <button type="button" class="btn btn-primary get-download-link">
            <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> {{ entry.objectname }} 
            </button>
         {% endif %}
         <button type="button" class="btn btn-danger delete-item" aria-label="Delete">
         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete 
         </button>
+        <div id="temp-url"></div>
       {% else %}
         <li><em>No entries here so far</em>
       {% endfor %}

@@ -48,9 +48,7 @@ def index():
     db = get_db()
     cur = db.execute('select * from entries order by entries.id desc')
     entries = cur.fetchall()
-    cur = db.execute("select * from attachments")
-    attachments = cur.fetchall() 
-    return render_template('index.html', entries=entries, attachments=attachments)
+    return render_template('index.html', entries=entries)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """User login/authentication/session management."""

@@ -19,15 +19,18 @@
         <div class="flash">{{ message }}</div>
       {% endfor %}
       {% if session.logged_in %}
-        <form action="{{ url_for('add_entry') }}" method="post" class="add-entry">
+        <form action="{{ url_for('add_entry') }}" method="post" class="add-entry" enctype="multipart/form-data">
           <dl>
             <dt>Title:
             <dd><input type="text" size="30" name="title">
             <dt>Text:
             <dd><textarea name="text" rows="5" cols="40"></textarea>
             <br>
+            <dd><input name="file" id="file" type="file" class="file">
             <br>
-            <dd><input type="submit" class="btn btn-default" value="Share">
+            <br>
+            <dd><input type="submit" class="btn btn-default" value="Post">
+            
           </dl>
         </form>
       {% endif %}
@@ -35,6 +38,15 @@
       <ul class="entries">
       {% for entry in entries %}
         <li class="entry"><h2 id={{ entry.id }}>{{ entry.title }}</h2>{{ entry.text|safe }}
+        <br>
+        {% if entry.objectname %}
+           <button type="button" class="btn btn-primary">
+           <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> {{ entry.objectname }} 
+           </button>
+        {% endif %}
+        <button type="button" class="btn btn-danger delete-item" aria-label="Delete">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete 
+        </button>
       {% else %}
         <li><em>No entries here so far</em>
       {% endfor %}

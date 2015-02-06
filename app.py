@@ -1,6 +1,8 @@
+import os
 from flask import Flask, request, session, g, redirect, url_for, render_template, abort, flash, jsonify
 import sqlite3
-
+from datetime import datetime
+import objectstore
 # Configuration
 
 DATABASE='flaskr.db'
@@ -9,10 +11,10 @@ SECRET_KEY = 'secret'
 USERNAME = 'admin'
 PASSWORD = 'password'
 HOST = '0.0.0.0'
-
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+objstr = objectstore.ObjectStore()
 # Code to connect to the flaskr database from config
 def connect_db():
     """ Connects to the database """
@@ -44,10 +46,11 @@ def close_db(error):
 def index():
     """Searches the database for entries, then displays them."""
     db = get_db()
-    cur = db.execute('select * from entries order by id desc')
+    cur = db.execute('select * from entries order by entries.id desc')
     entries = cur.fetchall()
-    return render_template('index.html', entries=entries)
-
+    cur = db.execute("select * from attachments")
+    attachments = cur.fetchall() 
+    return render_template('index.html', entries=entries, attachments=attachments)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """User login/authentication/session management."""
@@ -76,10 +79,19 @@ def add_entry():
     """Add new post to database."""
     if not session.get('logged_in'):
         abort(401)
-    db = get_db()
-    db.execute('insert into entries (title, text) values (?, ?)',
+    db = get_db() 
+    fileitem = request.files['file']
+    file_data = fileitem.read()
+    if fileitem:
+       now = datetime.now()
+       objstr.put_object('test_container1', fileitem.filename, file_data)
+       db.execute('insert into entries(title, text, attachment_container, objectname) values(?,?,?,?)', [request.form['title'], request.form['text'], 'test_container1', fileitem.filename])
+       db.commit()
+    else:
+       db.execute('insert into entries (title, text) values (?, ?)',
                  [request.form['title'], request.form['text']])
-    db.commit()
+       db.commit()
+
     flash('New entry was successfully posted')
     return redirect(url_for('index'))
 

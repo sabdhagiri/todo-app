@@ -78,9 +78,11 @@ def add_entry():
     if not session.get('logged_in'):
         abort(401)
     db = get_db() 
-    fileitem = request.files['file']
-    file_data = fileitem.read()
-    if fileitem:
+#    fileitem = request.files['file']
+#    file_data = fileitem.read()
+    if request.files['file']:
+       fileitem = request.files['file']
+       file_data = fileitem.read()
        now = datetime.now()
        objstr.put_object('test_container1', fileitem.filename, file_data)
        db.execute('insert into entries(title, text, attachment_container, objectname) values(?,?,?,?)', [request.form['title'], request.form['text'], 'test_container1', fileitem.filename])

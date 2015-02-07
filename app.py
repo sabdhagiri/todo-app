@@ -13,8 +13,15 @@ PASSWORD = 'password'
 HOST = '0.0.0.0'
 app = Flask(__name__)
 app.config.from_object(__name__)
+app.config['KEYSTONE_AUTH_URL'] = 'http://10.1.10.130:5000/v2.0'
+app.config['SWIFT_USER'] = 'swiftclient'
+app.config['SWIFT_PASS'] = 'swiftpass'
+app.config['TENANT_NAME'] = 'admin'
+app.config['KEYSTONE_AUTH_VERSION'] = '2.0'
+app.config['CONTAINER'] = 'test_container1'
+app.config['SWIFT_CONTAINER_BASE_PATH'] = 'http://10.1.10.130:8080'
 
-objstr = objectstore.ObjectStore()
+objstr = objectstore.ObjectStore(app.config['KEYSTONE_AUTH_URL'], app.config['SWIFT_USER'], app.config['SWIFT_PASS'], app.config['TENANT_NAME'], app.config['KEYSTONE_AUTH_VERSION'], app.config['CONTAINER'], app.config['SWIFT_CONTAINER_BASE_PATH'])
 # Code to connect to the flaskr database from config
 def connect_db():
     """ Connects to the database """
@@ -84,8 +91,8 @@ def add_entry():
        fileitem = request.files['file']
        file_data = fileitem.read()
        now = datetime.now()
-       objstr.put_object('test_container1', fileitem.filename, file_data)
-       db.execute('insert into entries(title, text, attachment_container, objectname) values(?,?,?,?)', [request.form['title'], request.form['text'], 'test_container1', fileitem.filename])
+       objstr.put_object(fileitem.filename, file_data)
+       db.execute('insert into entries(title, text, attachment_container, objectname) values(?,?,?,?)', [request.form['title'], request.form['text'], app.config['CONTAINER'], fileitem.filename])
        db.commit()
     else:
        db.execute('insert into entries (title, text) values (?, ?)',
@@ -111,7 +118,7 @@ def delete_entry(post_id):
 
 @app.route('/gettempurl/<post_id>', methods=['GET'])
 def get_temp_url(post_id):
-    print "I am here" 
+    
     result = { 'status':0, 'message': 'Error'  }
     try:
         db = get_db()
@@ -119,7 +126,7 @@ def get_temp_url(post_id):
         rv = cur.fetchone()
         container = rv[0]
         objectname = rv[1]
-        tempurl = objstr.get_temp_url(container, objectname, 60)
+        tempurl = objstr.get_temp_url(objectname, 60)
         result = { 'status':1, 'url': tempurl }
     except Exception as e:
         result = { 'status':0, 'url': repr(e) }

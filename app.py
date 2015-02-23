@@ -18,7 +18,7 @@ app.config['SWIFT_USER'] = 'swiftclient'
 app.config['SWIFT_PASS'] = 'swiftpass'
 app.config['TENANT_NAME'] = 'admin'
 app.config['KEYSTONE_AUTH_VERSION'] = '2.0'
-app.config['CONTAINER'] = 'test_container1'
+app.config['CONTAINER'] = 'test_container_lab'
 app.config['SWIFT_CONTAINER_BASE_PATH'] = 'http://10.1.10.130:8080'
 
 objstr = objectstore.ObjectStore(app.config['KEYSTONE_AUTH_URL'], app.config['SWIFT_USER'], app.config['SWIFT_PASS'], app.config['TENANT_NAME'], app.config['KEYSTONE_AUTH_VERSION'], app.config['CONTAINER'], app.config['SWIFT_CONTAINER_BASE_PATH'])
@@ -136,4 +136,10 @@ def get_temp_url(post_id):
 
 if __name__ == '__main__':
     init_db()
+    if objstr.check_container_stats(app.config['CONTAINER']):
+       pass
+    else:
+       objstr.create_container(app.config['CONTAINER'])
+
     app.run(host=app.config['HOST'])
+    

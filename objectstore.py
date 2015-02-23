@@ -1,3 +1,4 @@
+from swiftclient.exceptions import *
 import swiftclient
 from keystoneclient.v2_0 import client
 import hmac
@@ -15,7 +16,27 @@ class ObjectStore:
                                                 key=SWIFT_PASS,
                                                 tenant_name=TENANT_NAME,
                                                 authurl = KEYSTONE_AUTH_URL)
+      def check_container_stats(self,container):
+          try:
+              if(self.swift.head_container(container)):
+                return True              
+          except ClientException:
+              print "Container not found"
+              return False
 
+      def create_container(self,container):
+          self.swift.put_container(container)
+
+      def delete_container(self,container):
+          try:
+              self.swift.delete_container(container)
+              return True
+          except ClientException:
+              return False
+          except:
+              return False
+              
+ 
       def put_object(self,name,obj):
           self.swift.put_object(self.container,name,obj)
       
@@ -31,7 +52,3 @@ class ObjectStore:
           print url
           return url
 
-if __name__ == '__main__':
-    sw = ObjectStore()
-    swift = sw.swift
-    

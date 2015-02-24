@@ -5,23 +5,12 @@ from datetime import datetime
 import objectstore
 # Configuration
 
-DATABASE='flaskr.db'
-DEBUG = True
-SECRET_KEY = 'secret'
-USERNAME = 'admin'
-PASSWORD = 'password'
-HOST = '0.0.0.0'
 app = Flask(__name__)
-app.config.from_object(__name__)
-app.config['KEYSTONE_AUTH_URL'] = 'http://10.1.10.130:5000/v2.0'
-app.config['SWIFT_USER'] = 'swiftclient'
-app.config['SWIFT_PASS'] = 'swiftpass'
-app.config['TENANT_NAME'] = 'admin'
-app.config['KEYSTONE_AUTH_VERSION'] = '2.0'
-app.config['CONTAINER'] = 'test_container_lab'
-app.config['SWIFT_CONTAINER_BASE_PATH'] = 'http://10.1.10.130:8080'
+app.config.from_pyfile('config.py')
 
+#Create an ObjectStore instance
 objstr = objectstore.ObjectStore(app.config['KEYSTONE_AUTH_URL'], app.config['SWIFT_USER'], app.config['SWIFT_PASS'], app.config['TENANT_NAME'], app.config['KEYSTONE_AUTH_VERSION'], app.config['CONTAINER'], app.config['SWIFT_CONTAINER_BASE_PATH'])
+
 # Code to connect to the flaskr database from config
 def connect_db():
     """ Connects to the database """
@@ -56,6 +45,7 @@ def index():
     cur = db.execute('select * from entries order by entries.id desc')
     entries = cur.fetchall()
     return render_template('index.html', entries=entries)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """User login/authentication/session management."""
@@ -71,7 +61,6 @@ def login():
             return redirect(url_for('index'))
     return render_template('login.html', error=error)
 
-
 @app.route('/logout')
 def logout():
     """User logout/authentication/session management."""
@@ -85,8 +74,6 @@ def add_entry():
     if not session.get('logged_in'):
         abort(401)
     db = get_db() 
-#    fileitem = request.files['file']
-#    file_data = fileitem.read()
     if request.files['file']:
        fileitem = request.files['file']
        file_data = fileitem.read()

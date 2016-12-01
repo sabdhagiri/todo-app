@@ -7,8 +7,8 @@ import json
 from StringIO import StringIO
 
 class BasicTestCase(unittest.TestCase):
-  
-  
+
+
   def test_index(self):
     """initial test. ensure flask was set up correctly"""
     tester = app.app.test_client(self)
@@ -74,25 +74,25 @@ class FlaskrTestCase(unittest.TestCase):
         assert b'No entries here so far' not in rv.data
         assert b'Hello' in rv.data
         assert b'Hello, world !' in rv.data
-   
+
     def test_delete_message(self):
         """Ensure the messages are being deleted"""
         rv = self.app.get('/delete/1')
         data = json.loads(rv.data)
         self.assertEqual(data['status'], 1)
 
-class ObjecStoreTestCase(unittest.TestCase):
-    objstr = objectstore.ObjectStore(app.app.config['KEYSTONE_AUTH_URL'], app.app.config['SWIFT_USER'], app.app.config['SWIFT_PASS'], app.app.config['TENANT_NAME'], app.app.config['KEYSTONE_AUTH_VERSION'], app.app.config['CONTAINER'], app.app.config['SWIFT_CONTAINER_BASE_PATH']) 
+#class ObjecStoreTestCase(unittest.TestCase):
+#    objstr = objectstore.ObjectStore(app.app.config['KEYSTONE_AUTH_URL'], app.app.config['SWIFT_USER'], app.app.config['SWIFT_PASS'], app.app.config['TENANT_NAME'], app.app.config['KEYSTONE_AUTH_VERSION'], app.app.config['CONTAINER'], app.app.config['SWIFT_CONTAINER_BASE_PATH'])
+#
+#    def test_create_container(self):
+#        """Ensure that user can create container"""
+#        self.objstr.create_container("test_container3")
+#        self.assertTrue(self.objstr.check_container_stats("test_container3"))
+#
+#    def test_delete_container(self):
+#        """Ensure that user is able to delete the container after test"""
+#        self.assertTrue(self.objstr.delete_container("test_container3"))
 
-    def test_create_container(self):
-        """Ensure that user can create container"""
-        self.objstr.create_container("test_container3")
-        self.assertTrue(self.objstr.check_container_stats("test_container3"))
 
-    def test_delete_container(self):
-        """Ensure that user is able to delete the container after test"""
-        self.assertTrue(self.objstr.delete_container("test_container3"))
-        
-    
 if __name__ == '__main__':
     unittest.main()

@@ -2,14 +2,14 @@ import os
 from flask import Flask, request, session, g, redirect, url_for, render_template, abort, flash, jsonify
 import sqlite3
 from datetime import datetime
-import objectstore
+#import objectstore
 # Configuration
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 
 #Create an ObjectStore instance
-objstr = objectstore.ObjectStore(app.config['KEYSTONE_AUTH_URL'], app.config['SWIFT_USER'], app.config['SWIFT_PASS'], app.config['TENANT_NAME'], app.config['KEYSTONE_AUTH_VERSION'], app.config['CONTAINER'], app.config['SWIFT_CONTAINER_BASE_PATH'])
+#objstr = objectstore.ObjectStore(app.config['KEYSTONE_AUTH_URL'], app.config['SWIFT_USER'], app.config['SWIFT_PASS'], app.config['TENANT_NAME'], app.config['KEYSTONE_AUTH_VERSION'], app.config['CONTAINER'], app.config['SWIFT_CONTAINER_BASE_PATH'])
 
 # Code to connect to the flaskr database from config
 def connect_db():
@@ -73,18 +73,20 @@ def add_entry():
     """Add new post to database."""
     if not session.get('logged_in'):
         abort(401)
-    db = get_db() 
-    if request.files['file']:
-       fileitem = request.files['file']
-       file_data = fileitem.read()
-       now = datetime.now()
-       objstr.put_object(fileitem.filename, file_data)
-       db.execute('insert into entries(title, text, attachment_container, objectname) values(?,?,?,?)', [request.form['title'], request.form['text'], app.config['CONTAINER'], fileitem.filename])
-       db.commit()
-    else:
-       db.execute('insert into entries (title, text) values (?, ?)',
-                 [request.form['title'], request.form['text']])
-       db.commit()
+    db = get_db()
+#    if request.files['file']:
+#       fileitem = request.files['file']
+#       file_data = fileitem.read()
+#       now = datetime.now()
+#       objstr.put_object(fileitem.filename, file_data)
+#       db.execute('insert into entries(title, text, attachment_container, objectname) values(?,?,?,?)', [request.form['title'], request.form['text'], app.config['CONTAINER'], fileitem.filename])
+#       db.commit()
+#    else:
+#       db.execute('insert into entries (title, text) values (?, ?)',
+#                 [request.form['title'], request.form['text']])
+    db.execute('insert into entries (title, text) values (?, ?)',
+              [request.form['title'], request.form['text']])
+    db.commit()
 
     flash('New entry was successfully posted')
     return redirect(url_for('index'))
@@ -105,7 +107,7 @@ def delete_entry(post_id):
 
 @app.route('/gettempurl/<post_id>', methods=['GET'])
 def get_temp_url(post_id):
-    
+
     result = { 'status':0, 'message': 'Error'  }
     try:
         db = get_db()
@@ -123,10 +125,10 @@ def get_temp_url(post_id):
 
 if __name__ == '__main__':
     init_db()
-    if objstr.check_container_stats(app.config['CONTAINER']):
-       pass
-    else:
-       objstr.create_container(app.config['CONTAINER'])
+#    if objstr.check_container_stats(app.config['CONTAINER']):
+#       pass
+#    else:
+#       objstr.create_container(app.config['CONTAINER'])
 
     app.run(host=app.config['HOST'])
-    
+

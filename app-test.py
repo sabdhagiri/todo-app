@@ -6,19 +6,19 @@ import tempfile
 import json
 from StringIO import StringIO
 
-class BasicTestCase(unittest.TestCase):
+#class BasicTestCase(unittest.TestCase):
 
 
-  def test_index(self):
-    """initial test. ensure flask was set up correctly"""
-    tester = app.app.test_client(self)
-    response = tester.get('/', content_type='html/text')
-    self.assertEqual(response.status_code, 200)
+#  def test_index(self):
+#    """initial test. ensure flask was set up correctly"""
+#    tester = app.app.test_client(self)
+#    response = tester.get('/', content_type='html/text')
+#    self.assertEqual(response.status_code, 200)
 
-  def test_database(self):
-    """initial test. ensure that the database exists"""
-    tester = os.path.exists("flaskr.db")
-    self.assertEqual(tester, True)
+#  def test_database(self):
+#    """initial test. ensure that the database exists"""
+#    tester = os.path.exists("flaskr.db")
+#    self.assertEqual(tester, True)
 
 class FlaskrTestCase(unittest.TestCase):
 

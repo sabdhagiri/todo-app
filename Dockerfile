@@ -3,7 +3,8 @@
 #  Dockerfile to build todo-app demo application
 #
 #################################################
-# Set base image to centos
+# Set base to Python 2.7
+
 FROM python:2.7
 
 MAINTAINER "OneCloud Consulting Inc. <sabdhagiri@onecloudinc.com>"

@@ -4,4 +4,3 @@ Simple TODO list application using Python Flask framework
 
 * Users should be able to create todo tasks wth a title and description
 * Users should be able to attach an file to the task(This file object needs to be stored in Openstack Swift)
-* Mock edit for CI/CD demo

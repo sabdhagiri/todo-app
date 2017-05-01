@@ -1,4 +1,4 @@
 [gerrit]
-host=10.1.185.62
+host=10.1.181.150
 port=29418
 project=todo-app
